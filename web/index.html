@@ -4,12 +4,144 @@
     <meta charset="UTF-8">
     <title>Bart App</title>
     <style>
+
+
         body {
             text-align: center;
             background-image: url('https://www.yujiezhu.net/background.jpg')
         }
-        ul {
-            list-style-position: inside;
+        table {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        section {
+            margin-top: 7vh;
+        }
+
+        .glow-on-hover {
+            font-size: 24px;
+            font-family: cursive;
+            display: inline-block;
+            margin-right: 20px;
+            width: 220px;
+            height: 50px;
+            border: none;
+            outline: none;
+            color: #fff;
+            background: #111;
+            cursor: pointer;
+            position: relative;
+            z-index: 0;
+            border-radius: 10px;
+        }
+        .glow-on-hover:before {
+            content: '';
+            background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            position: absolute;
+            top: -2px;
+            left:-2px;
+            background-size: 400%;
+            z-index: -1;
+            filter: blur(5px);
+            width: calc(100% + 4px);
+            height: calc(100% + 4px);
+            animation: glowing 20s linear infinite;
+            opacity: 0;
+            transition: opacity .3s ease-in-out;
+            border-radius: 10px;
+        }
+        .glow-on-hover:active {
+            color: #000
+        }
+        .glow-on-hover:active:after {
+            background: transparent;
+        }
+        .glow-on-hover:hover:before {
+            opacity: 1;
+        }
+        .glow-on-hover:after {
+            z-index: -1;
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #111;
+            left: 0;
+            top: 0;
+            border-radius: 10px;
+        }
+        @keyframes glowing {
+            0% { background-position: 0 0; }
+            50% { background-position: 400% 0; }
+            100% { background-position: 0 0; }
+        }
+<!--    the above CSS comes from  https://getcssscan.com/css-buttons-examples-->
+<!--    the following CSS comes from https://moderncss.dev/custom-select-styles-with-pure-css/-->
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+        select {
+            // A reset of styles, including removing the default dropdown arrow
+            appearance: none;
+            // Additional resets for further consistency
+            background-color: transparent;
+            border: none;
+            padding: 0 1em 0 0;
+            margin: 0;
+            width: 100%;
+            font-family: inherit;
+            font-size: inherit;
+            cursor: inherit;
+            line-height: inherit;
+        }
+        select::-ms-expand {
+            display: none;
+        }
+        :root {
+            --select-border: #777;
+            --select-focus: blue;
+            --select-arrow: var(--select-border);
+        }
+        .select {
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+            min-width: 15ch;
+            max-width: 30ch;
+            border: 1px solid var(--select-border);
+            border-radius: 0.25em;
+            padding: 0.25em 0.5em;
+            font-size: 1.25rem;
+            cursor: pointer;
+            line-height: 1.1;
+            background-color: #fff;
+            background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
+        }
+        #origin-select {
+            margin-bottom: 2vh;
+        }
+        button {
+            margin-top: 2vh;
+        }
+        .left-aside {
+            width: 20%;
+            margin-top: 20vh;
+            padding-left: 0px;
+            margin-left: 0px;
+            float: left;
+            font-style: italic;
+            background-color: lightgray;
+        }
+        .right-aside {
+            width: 20%;
+            margin-top: 20vh;
+            padding-left: 0px;
+            margin-left: 0px;
+            float: right;
+            font-style: italic;
+            background-color: lightgray;
         }
     </style>
 </head>
@@ -17,31 +149,171 @@
     <header>
         <h1>Welcome to Bart App</h1>
     </header>
+
+    <aside class="left-aside" id="left-aside">
+
+    </aside>
+    <aside class="right-aside" id="right-aside">
+
+    </aside>
+
     <section>
-        <ul id="station_list"></ul>
+        <h3>Current Available Stations</h3>
+        <table id="station_table">
+        </table>
     </section>
 
+    <section class="select">
+
+        <label for="origin-select">Choose Departure Station:</label>
+        <select name="origin-select" id="origin-select">
+        </select>
+
+        <label for="destination-select">Choose Arrival Station:</label>
+        <select name="destination-select" id="destination-select">
+        </select>
+        <button class="glow-on-hover" onclick="go()" type="button">Go</button>
+    </section>
+
+
+
     <script type="text/javascript">
+        let stationList;
 
         function loadStation() {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == XMLHttpRequest.DONE) {
+                    var info = JSON.parse(xhr.responseText)['root']['stations'];
+                    stationList = Object.keys(info).map((key) => [info[key]])[0][0];
 
-<!--            document.getElementById("status").className = "switch-on";-->
-<!--            document.getElementById("status").innerHTML = "ON";-->
-            const Http = new XMLHttpRequest();
-            const url='https://bart.yujiezhu.net/stations';
-            Http.open("GET", url);
-            Http.send();
-            alert(Http.responseText);
+                    var table = document.getElementById("station_table");
+                    var counter = 0;
+                    var tr = document.createElement("tr");
+                    var originSelect = document.getElementById("origin-select");
+                    var destinationSelect = document.getElementById("destination-select");
 
-            let data = ['Ram', 'Shyam', 'Sita', 'Gita' ];
+                    for (let i = 0; i < stationList.length; i++) {
+                        var name = stationList[i]['name'];
+                        var abbr = stationList[i]['abbr'];
+                        originSelect.appendChild(new Option(name, abbr));
+                        destinationSelect.appendChild(new Option(name, abbr));
 
-            let list = document.getElementById("station_list");
+                        var th = document.createElement("th");
+                        th.innerText = name
+                        tr.appendChild(th);
+                        if (counter == 2) {
+                            table.appendChild(tr);
+                            tr = document.createElement("tr");
+                            counter = 0;
+                        } else {
+                            counter++;
+                        }
+                    }
+                }
+            }
+            xhr.open('GET', 'https://bart.yujiezhu.net/stations', true);
+            xhr.send(null);
+        }
 
-            data.forEach((item)=>{
-                let li = document.createElement("li");
-                li.innerText = item;
-                list.appendChild(li);
-            })
+        var asideId = "left-aside";
+        var asideTitle = "Departure Station";
+        function updateAside(station) {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == XMLHttpRequest.DONE) {
+                    var info = JSON.parse(xhr.responseText)['root']['stations']['station'];
+
+                    var name = info['name'];
+                    var address = info['address'];
+                    var city = info['city'];
+                    var county = info['county'];
+                    var state = info['state'];
+                    var zipcode = info['zipcode'];
+                    console.log(info)
+                    var southPlatform = info['south_platforms']['platform']
+                    var northPlatform = info['north_platforms']['platform']
+                    var southRoutes = info['south_routes']['route']
+                    var northRoutes = info['north_routes']['route']
+
+
+                    var aside = document.getElementById(asideId);
+                    while (aside.firstChild) {
+                        aside.removeChild(aside.lastChild);
+                    }
+
+                    var p = document.createElement("p");
+                    p.innerText = asideTitle;
+                    aside.appendChild(p);
+
+                    var p = document.createElement("p");
+                    p.innerText = "Name: " + name;
+                    aside.appendChild(p);
+
+                    var p = document.createElement("p");
+                    p.innerText = "Address: " + address;
+                    aside.appendChild(p);
+
+                    var p = document.createElement("p");
+                    p.innerText = "City: " + city;
+                    aside.appendChild(p);
+
+                    var p = document.createElement("p");
+                    p.innerText = "County: " + county;
+                    aside.appendChild(p);
+
+                    var p = document.createElement("p");
+                    p.innerText = "State: " + state;
+                    aside.appendChild(p);
+
+                    var p = document.createElement("p");
+                    p.innerText = "Zipcode: " + zipcode;
+                    aside.appendChild(p);
+
+                    var p = document.createElement("p");
+                    p.innerText = "South Platform: " + southPlatform;
+                    aside.appendChild(p);
+
+                    var p = document.createElement("p");
+                    p.innerText = "North Platform: " + northPlatform;
+                    aside.appendChild(p);
+
+                    var p = document.createElement("p");
+                    p.innerText = "South Route: \n" + southRoutes;
+                    aside.appendChild(p);
+
+                    var p = document.createElement("p");
+                    p.innerText = "North Route: \n" + northRoutes;
+                    aside.appendChild(p);
+
+                    if (asideId == "left-aside") {
+                        asideId = "right-aside";
+                        asideTitle = "Arrival Station";
+                    } else {
+                        asideId = "left-aside";
+                        asideTitle = "Departure Station";
+                    }
+
+                }
+            }
+            xhr.open('GET', 'https://bart.yujiezhu.net/station/source/' + station, true);
+            xhr.send(null);
+        }
+
+        function updateAsides(origin, destination) {
+            updateAside(origin);
+            updateAside(destination);
+        }
+
+        function go() {
+            var origin = document.getElementById("origin-select").value;
+            var destination = document.getElementById("destination-select").value;
+            if (origin == destination) {
+                alert("You must choose two different stations!");
+                return;
+            }
+            updateAsides(origin, destination);
+
         }
 
         function loadAll() {
