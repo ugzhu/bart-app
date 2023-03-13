@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bart App</title>
+    <style>
+        body {
+            text-align: center;
+            background-image: url('https://www.yujiezhu.net/background.jpg')
+        }
+        ul {
+            list-style-position: inside;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Bart App</h1>
+    </header>
+    <section>
+        <ul id="station_list"></ul>
+    </section>
+
+    <script type="text/javascript">
+
+        function loadStation() {
+
+<!--            document.getElementById("status").className = "switch-on";-->
+<!--            document.getElementById("status").innerHTML = "ON";-->
+            const Http = new XMLHttpRequest();
+            const url='https://bart.yujiezhu.net/stations';
+            Http.open("GET", url);
+            Http.send();
+            alert(Http.responseText);
+
+            let data = ['Ram', 'Shyam', 'Sita', 'Gita' ];
+
+            let list = document.getElementById("station_list");
+
+            data.forEach((item)=>{
+                let li = document.createElement("li");
+                li.innerText = item;
+                list.appendChild(li);
+            })
+        }
+
+        function loadAll() {
+            loadStation();
+        }
+
+        window.onload = loadAll;
+    </script>
+</body>
+</html>
+<!--Part 5 Answer:-->
+<!--The Bart data is coming from Bart API originally, but in the perspective of javascript on this webpage,-->
+<!--data is fetched from my own APIs, including:-->
+<!--https://bart.yujiezhu.net/stations-->
+<!--https://bart.yujiezhu.net/trips/source/<STN_ABBR>/dest/<STN_ABBR>-->
+<!--https://bart.yujiezhu.net/<STN_ABBR>-->
+<!--and-->
+<!--url of this web page is https://bart.yujiezhu.net -->
+<!--they all have the same protocol, port and host-->
+<!--therefore, they are considered the same origin-->

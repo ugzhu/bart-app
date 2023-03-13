@@ -15,7 +15,8 @@ def api_stations():
     output = controller.response().encode('utf-8')
     status = '200 OK'
     response_headers = [('Content-type', 'text/html'),
-                        ('Content-Length', str(len(output)))]
+                        ('Content-Length', str(len(output))),
+                        ('Access-Control-Allow-Origin', ': *')]
     return output, response_headers, status
 
 
@@ -24,7 +25,8 @@ def api_trips(path):
     output = controller.response().encode('utf-8')
     status = '200 OK'
     response_headers = [('Content-type', 'text/html'),
-                        ('Content-Length', str(len(output)))]
+                        ('Content-Length', str(len(output))),
+                        ('Access-Control-Allow-Origin', ': *')]
     return output, response_headers, status
 
 
@@ -33,7 +35,8 @@ def api_station(path):
     output = controller.response().encode('utf-8')
     status = '200 OK'
     response_headers = [('Content-type', 'text/html'),
-                        ('Content-Length', str(len(output)))]
+                        ('Content-Length', str(len(output))),
+                        ('Access-Control-Allow-Origin', ': *')]
     return output, response_headers, status
 
 
@@ -84,9 +87,9 @@ def start_response(a, b):
 if __name__ == '__main__':
     environ1 = {'PATH_INFO': '/stations',
                 'REQUEST_METHOD': 'GET'}
-    environ2 = {'PATH_INFO': ' /station/source/MLBR',
+    environ2 = {'PATH_INFO': '/station/source/MLBR',
                 'REQUEST_METHOD': 'GET'}
-    environ3 = {'PATH_INFO': ' /trips/source/MLBR/dest/WARM',
+    environ3 = {'PATH_INFO': '/trips/source/MLBR/dest/WARM',
                 'REQUEST_METHOD': 'GET'}
     output = application(environ3, start_response)
     print(output)
