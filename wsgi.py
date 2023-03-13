@@ -16,7 +16,7 @@ def api_stations():
     status = '200 OK'
     response_headers = [('Content-type', 'text/html'),
                         ('Content-Length', str(len(output))),
-                        ('Access-Control-Allow-Origin', ': *')]
+                        ('Access-Control-Allow-Origin', '*')]
     return output, response_headers, status
 
 
@@ -26,7 +26,7 @@ def api_trips(path):
     status = '200 OK'
     response_headers = [('Content-type', 'text/html'),
                         ('Content-Length', str(len(output))),
-                        ('Access-Control-Allow-Origin', ': *')]
+                        ('Access-Control-Allow-Origin', '*')]
     return output, response_headers, status
 
 
@@ -36,7 +36,7 @@ def api_station(path):
     status = '200 OK'
     response_headers = [('Content-type', 'text/html'),
                         ('Content-Length', str(len(output))),
-                        ('Access-Control-Allow-Origin', ': *')]
+                        ('Access-Control-Allow-Origin', '*')]
     return output, response_headers, status
 
 
