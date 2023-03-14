@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <title>Bart App</title>
     <style>
-
-
+        @import url(https://fonts.googleapis.com/css?family=Titillium+Web:400,200,200italic,300,300italic,900,700italic,700,600italic,600,400italic);
         body {
             text-align: center;
             background-image: url('https://www.yujiezhu.net/background.jpg')
@@ -17,7 +16,6 @@
         section {
             margin-top: 7vh;
         }
-
         .glow-on-hover {
             font-size: 24px;
             font-family: cursive;
@@ -77,15 +75,10 @@
         }
 <!--    the above CSS comes from  https://getcssscan.com/css-buttons-examples-->
 <!--    the following CSS comes from https://moderncss.dev/custom-select-styles-with-pure-css/-->
-        *,
-        *::before,
-        *::after {
+        *, *::before, *::after {
             box-sizing: border-box;
         }
         select {
-            // A reset of styles, including removing the default dropdown arrow
-            appearance: none;
-            // Additional resets for further consistency
             background-color: transparent;
             border: none;
             padding: 0 1em 0 0;
@@ -109,7 +102,7 @@
             margin-right: auto;
             width: 100%;
             min-width: 15ch;
-            max-width: 30ch;
+            max-width: 50ch;
             border: 1px solid var(--select-border);
             border-radius: 0.25em;
             padding: 0.25em 0.5em;
@@ -143,66 +136,102 @@
             font-style: italic;
             background-color: lightgray;
         }
+        footer {
+            margin-top: 20vh;
+            text-align: center;
+            padding: 3px;
+            background-color: DarkSalmon;
+            color: white;
+        }
+        .trips {
+            font-size: 1.25rem;
+        }
+        th, td {
+            padding: 0 15px 0 0;
+        }
+        #map {
+            margin: auto;
+            margin-top: 30px;
+            height: 30vh;
+            width: 30vw;
+        }
+        html,
+        body {
+            height: 100%;
+        }
+
     </style>
 </head>
 <body>
-    <header>
+    <header id="header">
         <h1>Welcome to Bart App</h1>
     </header>
-
-    <aside class="left-aside" id="left-aside">
-
-    </aside>
-    <aside class="right-aside" id="right-aside">
-
-    </aside>
-
     <section>
-        <h3>Current Available Stations</h3>
+        <h2>Current Available Stations</h2>
         <table id="station_table">
         </table>
     </section>
-
+    <aside class="left-aside" id="left-aside">
+    </aside>
+    <aside class="right-aside" id="right-aside">
+    </aside>
     <section class="select">
-
+        <h6></h6>
         <label for="origin-select">Choose Departure Station:</label>
         <select name="origin-select" id="origin-select">
         </select>
-
         <label for="destination-select">Choose Arrival Station:</label>
         <select name="destination-select" id="destination-select">
         </select>
         <button class="glow-on-hover" onclick="go()" type="button">Go</button>
     </section>
-
-
-
-    <script type="text/javascript">
+    <h6></h6>
+    <section class="trips" id="trips">
+    </section>
+    <h6></h6>
+    <section id="map">
+    </section>
+    <footer>
+        <p>Author: Yujie Zhu</p>
+        <p>yzhu7@scu.edu</p>
+    </footer>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDykRz3hDW9Wagoqk1ifP3UTsnRsPbv4ZE" defer></script>
+    <script>
         let stationList;
+        var origin;
+        var destination;
+        var tripsLoaded = 0;
+        var nearestDepartTime;
+        var longitudeDict = {};
+        var latitudeDict = {};
 
         function loadStation() {
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function() {
+
                 if (xhr.readyState == XMLHttpRequest.DONE) {
                     var info = JSON.parse(xhr.responseText)['root']['stations'];
                     stationList = Object.keys(info).map((key) => [info[key]])[0][0];
-
                     var table = document.getElementById("station_table");
+                    while (table.firstChild) {
+                        table.removeChild(table.lastChild);
+                    }
                     var counter = 0;
                     var tr = document.createElement("tr");
                     var originSelect = document.getElementById("origin-select");
                     var destinationSelect = document.getElementById("destination-select");
-
                     for (let i = 0; i < stationList.length; i++) {
                         var name = stationList[i]['name'];
                         var abbr = stationList[i]['abbr'];
+                        longitudeDict[abbr] = stationList[i]['gtfs_longitude'];
+                        latitudeDict[abbr] = stationList[i]['gtfs_latitude'];
                         originSelect.appendChild(new Option(name, abbr));
                         destinationSelect.appendChild(new Option(name, abbr));
 
-                        var th = document.createElement("th");
-                        th.innerText = name
-                        tr.appendChild(th);
-                        if (counter == 2) {
+                        var td = document.createElement("td");
+                        td.innerText = name
+                        tr.appendChild(td);
+                        if (counter == 9) {
                             table.appendChild(tr);
                             tr = document.createElement("tr");
                             counter = 0;
@@ -216,7 +245,6 @@
             xhr.send(null);
         }
 
-
         function updateLeftAside(station) {
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function() {
@@ -229,9 +257,9 @@
                         aside.removeChild(aside.lastChild);
                     }
                     try{
-                        var p = document.createElement("p");
-                        p.innerText = asideTitle;
-                        aside.appendChild(p);
+                        var h2 = document.createElement("h2");
+                        h2.innerText = asideTitle;
+                        aside.appendChild(h2);
                     } catch {}
 
                     try{
@@ -321,9 +349,9 @@
                         aside.removeChild(aside.lastChild);
                     }
                     try{
-                        var p = document.createElement("p");
-                        p.innerText = asideTitle;
-                        aside.appendChild(p);
+                        var h2 = document.createElement("h2");
+                        h2.innerText = asideTitle;
+                        aside.appendChild(h2);
                     } catch {}
 
                     try{
@@ -401,32 +429,176 @@
             xhr.send(null);
         }
 
-        function updateAsides(origin, destination) {
+        function updateTrips() {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == XMLHttpRequest.DONE) {
+                    var info = JSON.parse(xhr.responseText)['root']['schedule']['request']['trip'];
+
+                    var trips = document.getElementById("trips");
+                    while (trips.firstChild) {
+                        trips.removeChild(trips.lastChild);
+                    }
+
+                    var h2 = document.createElement("h2");
+                    h2.innerText = "Nearest Departures";
+                    trips.appendChild(h2);
+
+                    var table = document.createElement("table");
+                    var tr = document.createElement("tr");
+                    var th1 = document.createElement("th");
+                    th1.innerText = "Departure Time";
+                    tr.appendChild(th1);
+                    var th2 = document.createElement("th");
+                    th2.innerText = "Arrival Time";
+                    tr.appendChild(th2);
+                    var th3 = document.createElement("th");
+                    th3.innerText = "Fare";
+                    tr.appendChild(th3);
+                    var th4 = document.createElement("th");
+                    th4.innerText = "START Fare";
+                    tr.appendChild(th4);
+                    var th5 = document.createElement("th");
+                    th5.innerText = "Senior/Disabled Fare";
+                    tr.appendChild(th5);
+                    var th6 = document.createElement("th");
+                    th6.innerText = "Youth Fare";
+                    tr.appendChild(th6);
+                    table.appendChild(tr);
+
+                    for (let i = 0; i < info.length; i++) {
+                        console.log(info[i]);
+                        var trip = info[i];
+                        var departTime = trip['@origTimeMin'];
+                        var arriveTime = trip['@destTimeMin'];
+                        var fare = trip['@fare'];
+                        var startFare = trip['fares']['fare'][1]['@amount'];
+                        var seniorFare = trip['fares']['fare'][2]['@amount'];
+                        var youthFare = trip['fares']['fare'][3]['@amount'];
+                        tr = document.createElement("tr");
+
+                        if (i == 0) {
+                            nearestDepartTime = departTime;
+                            console.log(nearestDepartTime);
+                        }
+
+                        var td1 = document.createElement("td");
+                        td1.innerText = departTime;
+                        tr.appendChild(td1);
+
+                        var td2 = document.createElement("td");
+                        td2.innerText = arriveTime;
+                        tr.appendChild(td2);
+
+                        var td3 = document.createElement("td");
+                        td3.innerText = fare;
+                        tr.appendChild(td3);
+
+                        var td4 = document.createElement("td");
+                        td4.innerText = startFare;
+                        tr.appendChild(td4);
+
+                        var td5 = document.createElement("td");
+                        td5.innerText = seniorFare;
+                        tr.appendChild(td5);
+
+                        var td6 = document.createElement("td");
+                        td6.innerText = youthFare;
+                        tr.appendChild(td6);
+
+                        table.appendChild(tr);
+                    }
+
+                    trips.appendChild(table);
+                }
+            }
+            xhr.open('GET', 'https://bart.yujiezhu.net/trips/source/' + origin + '/dest/' + destination, true);
+            xhr.send(null);
+        }
+
+<!--map config refered to http://www.geocodezip.com/v3_GoogleEx_directions-travel-modesD.html?mode=transit&waypt=n-->
+<!--and https://developers.google.com/maps/documentation/javascript/examples/map-simple#maps_map_simple-html-->
+        let map;
+
+        function loadMap() {
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: parseFloat(latitudeDict[origin]), lng: parseFloat(longitudeDict[origin]) },
+                zoom: 8,
+            });
+            var directionsService = new google.maps.DirectionsService();
+            var directionsDisplay = new google.maps.DirectionsRenderer();
+            var originCor = new google.maps.LatLng(parseFloat(latitudeDict[origin]), parseFloat(longitudeDict[origin]));
+            var destinationCor = new google.maps.LatLng(parseFloat(latitudeDict[destination]), parseFloat(longitudeDict[destination]));
+
+            maptype = google.maps.MapTypeId.ROADMAP;
+            directionsDisplay.setMap(map);
+
+            var request = {
+                origin: originCor,
+                destination: destinationCor,
+                travelMode: google.maps.TravelMode['TRANSIT']
+            };
+
+            directionsService.route(request, function(response, status) {
+                if (status == google.maps.DirectionsStatus.OK) {
+                    directionsDisplay.setDirections(response);
+                } else {
+                    alert("Directions Request Failed, "+status);
+                }
+            });
+        }
+
+        function loadGo() {
+            tripsLoaded = 1;
             updateLeftAside(origin);
             updateRightAside(destination);
+            updateTrips();
+            loadMap();
         }
 
         function go() {
-            var origin = document.getElementById("origin-select").value;
-            var destination = document.getElementById("destination-select").value;
+            origin = document.getElementById("origin-select").value;
+            destination = document.getElementById("destination-select").value;
             if (origin == destination) {
                 alert("You must choose two different stations!");
                 return;
             }
-            updateAsides(origin, destination);
+            loadGo();
         }
 
-        function loadAll() {
+        function loadVisits() {
+            var visits;
+            visits = localStorage.getItem("visits");
+            if (visits == null) {
+                localStorage.setItem("visits", 0);
+                visits = localStorage.getItem("visits");
+            }
+            visits++;
+            localStorage.setItem("visits", visits);
+            header = document.getElementById("header");
+            p = document.createElement("p");
+            p.innerText = "You have visited this website " + visits + " time(s)!";
+            header.appendChild(p);
+        }
+
+        function initLoad() {
             loadStation();
+            loadVisits();
         }
 
         function refresh() {
             loadStation();
-            if (origin != destination) {
-                go();
+            if (tripsLoaded == 1) {
+                loadGo();
             }
         }
-        window.onload = loadAll;
+
+        setInterval(function(){
+            refresh();
+            console.log("API info reloaded");
+        }, 30000)
+
+      window.onload = initLoad;
     </script>
 </body>
 </html>
