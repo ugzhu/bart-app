@@ -216,84 +216,185 @@
             xhr.send(null);
         }
 
-        var asideId = "left-aside";
-        var asideTitle = "Departure Station";
-        function updateAside(station) {
+
+        function updateLeftAside(station) {
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function() {
                 if (xhr.readyState == XMLHttpRequest.DONE) {
+                    var asideId = "left-aside";
+                    var asideTitle = "Departure Station";
                     var info = JSON.parse(xhr.responseText)['root']['stations']['station'];
-
-                    var name = info['name'];
-                    var address = info['address'];
-                    var city = info['city'];
-                    var county = info['county'];
-                    var state = info['state'];
-                    var zipcode = info['zipcode'];
-                    console.log(info)
-                    var southPlatform = info['south_platforms']['platform']
-                    var northPlatform = info['north_platforms']['platform']
-                    var southRoutes = info['south_routes']['route']
-                    var northRoutes = info['north_routes']['route']
-
-
                     var aside = document.getElementById(asideId);
                     while (aside.firstChild) {
                         aside.removeChild(aside.lastChild);
                     }
+                    try{
+                        var p = document.createElement("p");
+                        p.innerText = asideTitle;
+                        aside.appendChild(p);
+                    } catch {}
 
-                    var p = document.createElement("p");
-                    p.innerText = asideTitle;
-                    aside.appendChild(p);
+                    try{
+                        var name = info['name'];
+                        var p = document.createElement("p");
+                        p.innerText = "Name: " + name;
+                        aside.appendChild(p);
+                    } catch {}
 
-                    var p = document.createElement("p");
-                    p.innerText = "Name: " + name;
-                    aside.appendChild(p);
+                    try{
+                        var address = info['address'];
+                        var p = document.createElement("p");
+                        p.innerText = "Address: " + address;
+                        aside.appendChild(p);
+                    } catch {}
 
-                    var p = document.createElement("p");
-                    p.innerText = "Address: " + address;
-                    aside.appendChild(p);
+                    try{
+                        var city = info['city'];
+                        var p = document.createElement("p");
+                        p.innerText = "City: " + city;
+                        aside.appendChild(p);
+                    } catch {}
 
-                    var p = document.createElement("p");
-                    p.innerText = "City: " + city;
-                    aside.appendChild(p);
+                    try{
+                        var county = info['county'];
+                        var p = document.createElement("p");
+                        p.innerText = "County: " + county;
+                        aside.appendChild(p);
+                    } catch {}
 
-                    var p = document.createElement("p");
-                    p.innerText = "County: " + county;
-                    aside.appendChild(p);
+                    try{
+                        var state = info['state'];
+                        var p = document.createElement("p");
+                        p.innerText = "State: " + state;
+                        aside.appendChild(p);
+                    } catch {}
 
-                    var p = document.createElement("p");
-                    p.innerText = "State: " + state;
-                    aside.appendChild(p);
+                    try{
+                        var zipcode = info['zipcode'];
+                        var p = document.createElement("p");
+                        p.innerText = "Zipcode: " + zipcode;
+                        aside.appendChild(p);
+                    } catch {}
 
-                    var p = document.createElement("p");
-                    p.innerText = "Zipcode: " + zipcode;
-                    aside.appendChild(p);
+                    try{
+                        var southPlatform = info['south_platforms']['platform']
+                        var p = document.createElement("p");
+                        p.innerText = "South Platform: " + southPlatform;
+                        aside.appendChild(p);
+                    } catch {}
 
-                    var p = document.createElement("p");
-                    p.innerText = "South Platform: " + southPlatform;
-                    aside.appendChild(p);
+                    try{
+                        var northPlatform = info['north_platforms']['platform']
+                        var p = document.createElement("p");
+                        p.innerText = "North Platform: " + northPlatform;
+                        aside.appendChild(p);
+                    } catch {}
 
-                    var p = document.createElement("p");
-                    p.innerText = "North Platform: " + northPlatform;
-                    aside.appendChild(p);
+                    try{
+                        var southRoutes = info['south_routes']['route']
+                        var p = document.createElement("p");
+                        p.innerText = "South Route: \n" + southRoutes;
+                        aside.appendChild(p);
+                    } catch {}
 
-                    var p = document.createElement("p");
-                    p.innerText = "South Route: \n" + southRoutes;
-                    aside.appendChild(p);
+                    try{
+                        var northRoutes = info['north_routes']['route']
+                        var p = document.createElement("p");
+                        p.innerText = "North Route: \n" + northRoutes;
+                        aside.appendChild(p);
+                    } catch {}
+                }
+            }
+            xhr.open('GET', 'https://bart.yujiezhu.net/station/source/' + station, true);
+            xhr.send(null);
+        }
 
-                    var p = document.createElement("p");
-                    p.innerText = "North Route: \n" + northRoutes;
-                    aside.appendChild(p);
-
-                    if (asideId == "left-aside") {
-                        asideId = "right-aside";
-                        asideTitle = "Arrival Station";
-                    } else {
-                        asideId = "left-aside";
-                        asideTitle = "Departure Station";
+        function updateRightAside(station) {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == XMLHttpRequest.DONE) {
+                    var asideId = "right-aside";
+                    var asideTitle = "Arrival Station";
+                    var info = JSON.parse(xhr.responseText)['root']['stations']['station'];
+                    var aside = document.getElementById(asideId);
+                    while (aside.firstChild) {
+                        aside.removeChild(aside.lastChild);
                     }
+                    try{
+                        var p = document.createElement("p");
+                        p.innerText = asideTitle;
+                        aside.appendChild(p);
+                    } catch {}
 
+                    try{
+                        var name = info['name'];
+                        var p = document.createElement("p");
+                        p.innerText = "Name: " + name;
+                        aside.appendChild(p);
+                    } catch {}
+
+                    try{
+                        var address = info['address'];
+                        var p = document.createElement("p");
+                        p.innerText = "Address: " + address;
+                        aside.appendChild(p);
+                    } catch {}
+
+                    try{
+                        var city = info['city'];
+                        var p = document.createElement("p");
+                        p.innerText = "City: " + city;
+                        aside.appendChild(p);
+                    } catch {}
+
+                    try{
+                        var county = info['county'];
+                        var p = document.createElement("p");
+                        p.innerText = "County: " + county;
+                        aside.appendChild(p);
+                    } catch {}
+
+                    try{
+                        var state = info['state'];
+                        var p = document.createElement("p");
+                        p.innerText = "State: " + state;
+                        aside.appendChild(p);
+                    } catch {}
+
+                    try{
+                        var zipcode = info['zipcode'];
+                        var p = document.createElement("p");
+                        p.innerText = "Zipcode: " + zipcode;
+                        aside.appendChild(p);
+                    } catch {}
+
+                    try{
+                        var southPlatform = info['south_platforms']['platform']
+                        var p = document.createElement("p");
+                        p.innerText = "South Platform: " + southPlatform;
+                        aside.appendChild(p);
+                    } catch {}
+
+                    try{
+                        var northPlatform = info['north_platforms']['platform']
+                        var p = document.createElement("p");
+                        p.innerText = "North Platform: " + northPlatform;
+                        aside.appendChild(p);
+                    } catch {}
+
+                    try{
+                        var southRoutes = info['south_routes']['route']
+                        var p = document.createElement("p");
+                        p.innerText = "South Route: \n" + southRoutes;
+                        aside.appendChild(p);
+                    } catch {}
+
+                    try{
+                        var northRoutes = info['north_routes']['route']
+                        var p = document.createElement("p");
+                        p.innerText = "North Route: \n" + northRoutes;
+                        aside.appendChild(p);
+                    } catch {}
                 }
             }
             xhr.open('GET', 'https://bart.yujiezhu.net/station/source/' + station, true);
@@ -301,8 +402,8 @@
         }
 
         function updateAsides(origin, destination) {
-            updateAside(origin);
-            updateAside(destination);
+            updateLeftAside(origin);
+            updateRightAside(destination);
         }
 
         function go() {
@@ -313,13 +414,18 @@
                 return;
             }
             updateAsides(origin, destination);
-
         }
 
         function loadAll() {
             loadStation();
         }
 
+        function refresh() {
+            loadStation();
+            if (origin != destination) {
+                go();
+            }
+        }
         window.onload = loadAll;
     </script>
 </body>

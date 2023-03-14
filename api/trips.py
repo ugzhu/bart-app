@@ -8,7 +8,7 @@ class TripsController:
         self.origin, self.destination = path.split("/")[3], path.split("/")[5]
         self.url = f"https://api.bart.gov/api/sched.aspx?cmd=depart&" \
               f"orig={self.origin}&dest={self.destination}&" \
-              f"key=MW9S-E7SL-26DU-VV8V&time=now"
+              f"key=MW9S-E7SL-26DU-VV8V&time=now&a=3&b=0"
 
     def response(self):
         xml = requests.get(self.url).content
