@@ -68,7 +68,7 @@ def application(environ, start_response):
         return [output]
 
     if path == '/':
-        output, response_headers, status = web_index(path)
+        output, response_headers, status = web_index()
         start_response(status, response_headers)
         return [output]
 
